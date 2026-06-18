@@ -1,5 +1,7 @@
 # DaVinci Resolve Render Check
 
+<img width="715" height="324" alt="Screenshot 2026-06-17 at 8 17 05 PM" src="https://github.com/user-attachments/assets/605425a9-a689-47c5-8823-00e9b3a39ce9" />
+
 A GUI-based Lua script for DaVinci Resolve that automates the import, organization, and verification of exported/transcoded footage against original camera files — now with roll-aware numbering-gap detection across a wide range of digital cinema and mobile camera formats.
 
 ## Script Included
