@@ -8,8 +8,13 @@ A GUI-based Lua script for DaVinci Resolve that automates the import, organizati
 
 ## Script Included
 
-### **Render_Check_v6.lua** — Media Comparison Tool with GUI, Timecode Verification, and Gap Detection
+### **Render_Check_v7.lua** — Media Comparison Tool with GUI, Timecode Verification, and Gap Detection
 A comprehensive tool with a graphical interface for comparing clips between OCN (Original Camera Negative) and TRANSCODES bins to verify all exports match their camera originals, including timecode synchronization and missing-clip detection.
+
+## What's New in v7
+
+- 🎬 **Underscore-roll naming support** — gap detection now recognizes clips named `A_0005C003_260716_121755_…` (camera letter + `_` + roll digits + `C` + clip number), as produced by the ARRI Alexa 35. This convention was previously reported as "unrecognized naming" and skipped.
+- 🛡️ **Roll-collapse safeguard** — rolls in the new style (e.g. `A_0005`) are excluded from timestamp stem collapsing, so `A_0005` and `A_0006` are analyzed as separate rolls instead of being merged into a single `A` group, which could mask real gaps.
 
 ## What's New in v6
 
@@ -41,7 +46,7 @@ A comprehensive tool with a graphical interface for comparing clips between OCN 
 
 ## Installation
 
-1. **Download the script** (`Render_Check_v6.lua`)
+1. **Download the script** (`Render_Check_v7.lua`)
 
 2. **Copy to DaVinci Resolve scripts folder**:
    - **macOS**: `/Users/[USERNAME]/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility`
@@ -56,7 +61,7 @@ A comprehensive tool with a graphical interface for comparing clips between OCN 
 
 Once installed, launch the script via:
 
-**Workspace → Scripts → Utility → Render_Check_v6**
+**Workspace → Scripts → Utility → Render_Check_v7**
 
 ## Complete Workflow
 
@@ -200,6 +205,7 @@ Gap detection recognizes clip numbers from the following naming schemes:
 | **iPhone native Camera** | `IMG_1234` | `IMG_####` |
 | **iPhone Blackmagic Camera** (reel mode) | `A001_C0001_…` | `A001_C####` |
 | **iPhone Blackmagic Camera** (timestamped) | `A001_20230515_C0001` | `A001_*_C####` (collapsed) |
+| **ARRI Alexa 35** (underscore-roll style) | `A_0005C003_260716_121755_h1DOR` | `A_0005C###` |
 
 **Formats not currently auto-grouped** (reported under "skipped by gap detection"):
 - Sony XDCAM bare `C0001.MXF`
@@ -257,7 +263,7 @@ The **Timecode Match** feature compares the start timecode between original and 
 The **Gap Detection** feature analyzes OCN clip names for missing numbers within each roll, catching dropped or missing camera files that the filename/duration comparison wouldn't surface.
 
 **How It Works:**
-1. Parses each clip name into a *roll* and *clip number* using three ordered patterns covering the major cinema and mobile camera conventions
+1. Parses each clip name into a *roll* and *clip number* using four ordered patterns covering the major cinema and mobile camera conventions
 2. Counts how many clips share each potential *stem* (roll with a trailing `_digits` segment stripped) and collapses timestamped roll variants to their stem when 2+ clips agree
 3. For each group with 2 or more clips, finds gaps between the minimum and maximum clip number and reports them
 4. Lists any clips whose naming couldn't be parsed so you can verify nothing was silently skipped
@@ -365,10 +371,11 @@ You can assign a keyboard shortcut to launch Render Check directly from DaVinci 
 - The Render Check GUI should launch immediately
 - If nothing happens, confirm the script is in the correct `Utility` scripts folder and that Resolve has been restarted since installation
 
-> **Tip:** DaVinci Resolve's keyboard customization UI may only surface scripts that have been accessed at least once via the Workspace menu. If the script doesn't appear in the shortcut list, run it manually once first via **Workspace → Scripts → Utility → Render_Check_v6**, then return to Keyboard Customization.
+> **Tip:** DaVinci Resolve's keyboard customization UI may only surface scripts that have been accessed at least once via the Workspace menu. If the script doesn't appear in the shortcut list, run it manually once first via **Workspace → Scripts → Utility → Render_Check_v7**, then return to Keyboard Customization.
 
 ## Version History
 
+- **v7** — Added gap-detection support for underscore-roll naming (`A_0005C003_…`), excluded these rolls from timestamp stem collapsing to prevent distinct rolls from being merged
 - **v6** — Roll-based gap grouping, timestamp stem collapse, unrecognized-naming report, broader camera convention coverage, fixed false-positive gap bug for clips with trailing `C` in suffix
 - **v4** — GUI with folder browser, auto-import, timecode verification, gap detection (prefix-based), export logs, persistent settings
 
